@@ -1,0 +1,28 @@
+#include <stdio.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <string.h>
+#include <unistd.h>
+
+int main() {
+    int shmid;
+    char *shm;
+
+    shmid = shmget(1234, 100, 0666 | IPC_CREAT);
+    shm = (char*) shmat(shmid, NULL, 0);
+
+    if (fork() == 0) {
+        printf("Child reading: %s\n", shm);
+        shmdt(shm);
+    } else {
+        char msg[50];
+        printf("Enter message: ");
+        scanf("%[^\n]", msg);
+        strcpy(shm, msg);
+        wait(NULL);
+        shmdt(shm);
+        shmctl(shmid, IPC_RMID, NULL);
+    }
+
+    return 0;
+}

@@ -1,0 +1,18 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+int main() {
+    int fd;
+    char buffer[100];
+
+    // create a file
+    fd = creat("demo.txt", 0644);
+    write(fd, "Hello System Calls\n", 20);
+    close(fd);
+
+    // open for reading
+    fd = open("demo.txt", O_RDONLY);
+    int n = read(fd, buffer, sizeof(buffer));
+    buffer[n] = '\0';
+    printf("Read: %s\n", buffer);

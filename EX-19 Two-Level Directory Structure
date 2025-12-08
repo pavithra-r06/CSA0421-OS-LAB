@@ -1,0 +1,108 @@
+#include <stdio.h>
+#include <string.h>
+
+struct SubDir {
+    char name[20];
+    int file_count;
+    char files[10][20];
+};
+
+int main() {
+    int n;
+    printf("Enter number of subdirectories: ");
+    scanf("%d", &n);
+
+    struct SubDir dir[n];
+    for (int i = 0; i < n; i++) {
+        printf("Enter subdirectory name: ");
+        scanf("%s", dir[i].name);
+        dir[i].file_count = 0;
+    }
+
+    while (1) {
+        int choice;
+        printf("\n1. Create File\n2. Search File\n3. Delete File\n4. Exit\n");
+        scanf("%d", &choice);
+
+        if (choice == 1) {
+            char dname[20], fname[20];
+            printf("Enter subdirectory: ");
+            scanf("%s", dname);
+            printf("Enter filename: ");
+            scanf("%s", fname);
+
+            int d = -1;
+            for (int i = 0; i < n; i++)
+                if (strcmp(dir[i].name, dname) == 0)
+                    d = i;
+
+            if (d == -1) {
+                printf("Subdirectory not found\n");
+                continue;
+            }
+
+            strcpy(dir[d].files[dir[d].file_count++], fname);
+            printf("File created\n");
+        }
+        else if (choice == 2) {
+            char dname[20], fname[20];
+            printf("Enter subdirectory: ");
+            scanf("%s", dname);
+            printf("Enter filename to search: ");
+            scanf("%s", fname);
+
+            int d = -1;
+            for (int i = 0; i < n; i++)
+                if (strcmp(dir[i].name, dname) == 0)
+                    d = i;
+
+            if (d == -1) {
+                printf("Subdirectory not found\n");
+                continue;
+            }
+
+            int found = 0;
+            for (int i = 0; i < dir[d].file_count; i++)
+                if (strcmp(dir[d].files[i], fname) == 0)
+                    found = 1;
+
+            printf(found ? "File found\n" : "File not found\n");
+        }
+        else if (choice == 3) {
+            char dname[20], fname[20];
+            printf("Enter subdirectory: ");
+            scanf("%s", dname);
+            printf("Enter filename to delete: ");
+            scanf("%s", fname);
+
+            int d = -1;
+            for (int i = 0; i < n; i++)
+                if (strcmp(dir[i].name, dname) == 0)
+                    d = i;
+
+            if (d == -1) {
+                printf("Subdirectory not found\n");
+                continue;
+            }
+
+            int idx = -1;
+            for (int i = 0; i < dir[d].file_count; i++)
+                if (strcmp(dir[d].files[i], fname) == 0)
+                    idx = i;
+
+            if (idx == -1) {
+                printf("File not found\n");
+            } else {
+                for (int i = idx; i < dir[d].file_count - 1; i++)
+                    strcpy(dir[d].files[i], dir[d].files[i + 1]);
+                dir[d].file_count--;
+                printf("File deleted\n");
+            }
+        }
+        else {
+            break;
+        }
+    }
+
+    return 0;
+}
